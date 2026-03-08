@@ -1,0 +1,509 @@
+/** @format */
+
+.Experience {
+  padding: 5rem 10rem;
+  background-color: var(--color-main-2);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+  height: auto;
+  min-height: auto;
+
+  .header {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+
+    h2 {
+      font-size: var(--fs-2xl);
+      color: var(--color-text);
+    }
+
+    .subtitle {
+      color: var(--color-button);
+      font-size: var(--fs-sm);
+    }
+
+    .lead {
+      color: var(--color-text-soft);
+      max-width: 70ch;
+    }
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: var(--space-9);
+    align-items: start;
+  }
+
+  .left {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
+
+    .decoration {
+      display: flex;
+      align-items: center;
+
+      .line {
+        height: 1px;
+        background-color: var(--color-button);
+        width: 5%;
+        margin-right: var(--space-2);
+      }
+
+      .kicker {
+        color: var(--color-button);
+        font-size: var(--fs-2xs);
+      }
+    }
+
+    .list {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-6);
+    }
+
+    .jobCard {
+      background: var(--color-main-2);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-l);
+      padding: var(--space-6);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-4);
+      height: auto;
+      min-height: 0;
+
+      .jobTop {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-2);
+
+        .role {
+          font-size: var(--fs-lg);
+          color: var(--color-text);
+        }
+
+        .meta {
+          display: flex;
+          gap: var(--space-4);
+          flex-wrap: wrap;
+          font-size: var(--fs-xs);
+
+          .date {
+            color: var(--color-text-soft);
+            padding: 0.25rem 0.5rem;
+            border-radius: 999px;
+            background: var(--color-blue-muted);
+            border: 1px solid var(--color-blue-soft);
+          }
+
+          .location {
+            color: var(--color-text-soft);
+          }
+        }
+      }
+
+      .summary {
+        color: var(--color-text-soft);
+      }
+
+      .bullets {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-2);
+
+        li {
+          position: relative;
+          padding-left: 1.35rem;
+          color: var(--color-text-soft);
+
+          &::before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            top: 0;
+            color: var(--color-button);
+          }
+        }
+      }
+
+      .tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--space-2);
+
+        .tag {
+          font-size: var(--fs-xs);
+          color: var(--color-text-soft);
+          padding: 0.25rem 0.6rem;
+          border-radius: 999px;
+          background: var(--color-main);
+          border: 1px solid var(--color-border);
+        }
+      }
+    }
+  }
+
+  .right {
+    position: sticky;
+    top: calc(var(--nav-height) + var(--space-6));
+
+    .cvCard {
+      background: var(--color-main-2);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-l);
+      padding: var(--space-6);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-6);
+
+      .cvTitle {
+        display: flex;
+        gap: var(--space-4);
+        align-items: flex-start;
+
+        .cvIcon {
+          width: 42px;
+          height: 42px;
+          border-radius: var(--radius-s);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          background: var(--color-blue-muted);
+          border: 1px solid var(--color-blue-soft);
+          color: var(--color-button);
+          flex: 0 0 auto;
+        }
+
+        h3 {
+          color: var(--color-text);
+          margin-bottom: var(--space-1);
+        }
+
+        p {
+          color: var(--color-text-soft);
+          font-size: var(--fs-sm);
+        }
+      }
+
+      .cvActions {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-3);
+
+        a {
+          text-decoration: none;
+          text-align: center;
+          padding: var(--space-3);
+          border-radius: var(--radius-s);
+          transition: transform 120ms ease;
+
+          &:hover {
+            transform: translateY(-1px);
+          }
+        }
+
+        .primary {
+          background-color: var(--color-button);
+          color: var(--color-text);
+          border: 1px solid var(--color-button);
+        }
+
+        .secondary {
+          background-color: var(--color-main);
+          color: var(--color-text);
+          border: 2px solid var(--color-border);
+
+          &:hover {
+            border-color: var(--color-border-active);
+          }
+        }
+      }
+
+      .contactBox {
+        border-top: 1px solid var(--color-border);
+        padding-top: var(--space-6);
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-3);
+
+        .contactTitle {
+          color: var(--color-text);
+          font-size: var(--fs-md);
+        }
+
+        .contactDesc {
+          color: var(--color-text-soft);
+          font-size: var(--fs-sm);
+        }
+      }
+
+      .miniForm {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-4);
+      }
+
+      .label {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-2);
+        color: var(--color-text-soft);
+        font-size: var(--fs-xs);
+      }
+
+      .input,
+      .textarea {
+        width: 100%;
+        background: var(--color-main);
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-s);
+        padding: var(--space-3);
+        color: var(--color-text);
+        outline: none;
+
+        &::placeholder {
+          color: var(--color-text-muted);
+        }
+
+        &:focus {
+          border-color: var(--color-border-active);
+        }
+      }
+
+      .textarea {
+        resize: none;
+        min-height: 120px;
+      }
+
+      .submit {
+        background-color: var(--color-button);
+        color: var(--color-text);
+        border: 1px solid var(--color-button);
+        border-radius: var(--radius-s);
+        padding: var(--space-3);
+        cursor: pointer;
+
+        &:hover {
+          transform: translateY(-1px);
+          border-color: var(--color-button-hover);
+        }
+      }
+      .formMessage,
+      .formMessageSuccess,
+      .formMessageError {
+        margin-top: var(--space-2);
+        padding: var(--space-3);
+        border-radius: var(--radius-s);
+        font-size: var(--fs-sm);
+        line-height: 1.4;
+        animation: fadeInMessage 0.35s ease;
+      }
+
+      .formMessage {
+        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid var(--color-border);
+        color: var(--color-text-soft);
+      }
+
+      .formMessageSuccess {
+        background: rgba(60, 180, 120, 0.12);
+        border: 1px solid rgba(60, 180, 120, 0.35);
+        color: #7ee2a8;
+      }
+
+      .formMessageError {
+        background: rgba(255, 90, 90, 0.12);
+        border: 1px solid rgba(255, 90, 90, 0.35);
+        color: #ff9b9b;
+      }
+      .closing {
+        animation: fadeOutMessage 0.4s ease forwards;
+      }
+    }
+  }
+}
+
+
+@media (min-width: 1600px) {
+  .Experience {
+    padding: 6rem 12rem; // añadido
+
+    .grid {
+      grid-template-columns: 2.1fr 1fr; // añadido
+      gap: 2rem; // añadido
+    }
+
+    .left {
+      .jobCard {
+        padding: 2rem; // añadido
+
+        .jobTop {
+          .role {
+            font-size: 1.35rem; // añadido
+          }
+        }
+
+        .summary,
+        .bullets li {
+          font-size: 1rem; // añadido
+        }
+      }
+    }
+
+    .right {
+      .cvCard {
+        padding: 2rem; // añadido
+      }
+    }
+  }
+}
+
+
+@media (max-width: 1024px) {
+  .Experience {
+    padding: 4rem 3rem; // añadido
+
+    .grid {
+      grid-template-columns: 1fr; // añadido
+      gap: 2rem; // añadido
+    }
+
+    .left {
+      .decoration {
+        .line {
+          width: 24px; // cambiado
+        }
+      }
+    }
+
+    .right {
+      position: static; // añadido
+
+      .cvCard {
+        padding: 1.5rem; // añadido
+      }
+    }
+  }
+}
+
+
+@media (max-width: 768px) {
+  .Experience {
+    padding: 3rem 1.25rem; // añadido
+    gap: 2rem; // añadido
+
+    .header {
+      h2 {
+        font-size: clamp(1.8rem, 7vw, 2.3rem); // añadido
+      }
+
+      .lead {
+        max-width: 100%; // añadido
+      }
+    }
+
+    .left {
+      .list {
+        gap: 1rem; // añadido
+      }
+
+      .jobCard {
+        padding: 1.1rem; // añadido
+        gap: 0.9rem; // añadido
+
+        .jobTop {
+          .role {
+            font-size: 1.05rem; // añadido
+            line-height: 1.3; // añadido
+          }
+
+          .meta {
+            gap: 0.5rem; // añadido
+          }
+        }
+
+        .summary,
+        .bullets li {
+          font-size: 0.95rem; // añadido
+        }
+      }
+    }
+
+    .right {
+      .cvCard {
+        padding: 1.1rem; // añadido
+        gap: 1.25rem; // añadido
+
+        .cvTitle {
+          flex-direction: column; // añadido
+          gap: 0.75rem; // añadido
+        }
+
+        .cvActions {
+          a {
+            width: 100%; // añadido
+          }
+        }
+
+        .contactBox {
+          padding-top: 1.25rem; // añadido
+        }
+      }
+    }
+  }
+}
+
+
+@media (max-width: 480px) {
+  .Experience {
+    .left {
+      .jobCard {
+        .tags {
+          gap: 0.4rem; // añadido
+
+          .tag {
+            font-size: 0.7rem; // añadido
+          }
+        }
+      }
+    }
+
+    .right {
+      .cvCard {
+        .input,
+        .textarea,
+        .submit,
+        .cvActions a {
+          font-size: 0.9rem; // añadido
+        }
+      }
+    }
+  }
+}
+@keyframes fadeInMessage {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes fadeOutMessage {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  to {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+}

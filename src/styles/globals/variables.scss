@@ -1,0 +1,99 @@
+:root {
+  /* =========================
+     Font
+     ========================= */
+
+  --font-sans:
+    "Satoshi", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+
+  --fs-2xs: 0.75rem; /* 12px → helper, captions */
+  --fs-xs: 0.8125rem; /* 13px → tags, meta info */
+  --fs-sm: 0.875rem; /* 14px → small text, buttons secundarios */
+  --fs-base: 1rem; /* 16px → body text */
+  --fs-md: 1.125rem; /* 18px → body destacado */
+  --fs-lg: 1.25rem; /* 20px → section subtitles */
+  --fs-xl: 1.5rem; /* 24px → section titles */
+  --fs-2xl: 1.875rem; /* 30px → page titles */
+  --fs-3xl: 2.25rem; /* 36px → hero title (mobile/desktop light) */
+  --fs-4xl: 3rem; /* 48px → hero title desktop */
+  --fs-5xl: 3.75rem; /* 60px → big landing headlines */
+
+
+
+  /* =========================
+     RADII (Redondeos)
+     ========================= */
+  --radius-s: 0.5rem;
+  --radius-m: 1rem;
+  --radius-l: 1.25rem;
+  --radius-xl: 1.5rem;
+
+  /* =========================
+     SPACING SCALE
+     ========================= */
+  --space-1: 0.25rem; /* 4px */
+  --space-2: 0.5rem; /* 8px */
+  --space-3: 0.75rem; /* 12px */
+  --space-4: 1rem; /* 16px */
+  --space-5: 1.25rem; /* 20px */
+  --space-6: 1.5rem; /* 24px */
+  --space-7: 2rem; /* 32px */
+  --space-8: 2.5rem; /* 40px */
+  --space-9: 3rem; /* 48px */
+  --space-10: 4rem; /* 64px */
+
+  /*Space header for fixed */
+
+  --nav-height: 5rem;
+}
+
+
+  /* =========================
+     COLOR SYSTEM Dark
+     ========================= */
+[data-theme="dark"] {
+  --color-main: #101922;
+  --color-main-2: #0d141b;
+  --color-border: #192735;
+  --color-border-active: #2f4664;
+  --color-card: #192633;
+  --color-button: #137fec;
+  --color-button-hover: #0f62b4;
+  --color-button-muted:#4b5965;
+  --color-text: #fdfdfd;
+  --color-text-soft:#b9c3ce;
+  --color-text-muted: #394859;
+  --color-text-accent: #137fec;
+  --color-accent: #2aa3ff;
+  --color-blue-soft: #1b3b5a;
+  --color-blue-muted: #0e243a;
+}
+
+/* =========================
+     COLOR SYSTEM light
+     ========================= */
+
+[data-theme="light"] {
+  --color-main: #f6f8fb;
+  --color-main-2: #eef2f7;
+
+  --color-border: #d4dde7;
+  --color-border-active: #9cb8da; /* equivalente “activo” en light (más visible que el border normal) */
+
+  --color-card: #ffffff;
+
+  --color-button: #137fec;
+  --color-button-hover: #0f62b4;
+  --color-button-muted: #94a3b8;  /* equivalente light a tu muted dark: #4b5965 */
+
+  --color-text: #0f172a;
+  --color-text-soft: #334155;     /* equivalente light a tu soft dark: #b9c3ce (texto secundario) */
+  --color-text-muted: #475569;
+  --color-text-accent: #137fec;
+
+  --color-accent: #2aa3ff;
+
+  --color-blue-soft: #cfe3f5;     /* equivalente light a tu blue-soft dark: #1b3b5a */
+  --color-blue-muted: #e6f1fb;    /* equivalente light a tu blue-muted dark: #0e243a (fondo badge) */
+}
+

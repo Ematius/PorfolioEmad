@@ -1,0 +1,12 @@
+@use "./globals/variables";
+@use "./globals/reset";
+@use "./globals/base";
+@use "./globals/fonts";
+
+
+
+main{
+
+    padding-top: var(--nav-height);
+    
+}

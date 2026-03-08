@@ -1,0 +1,21 @@
+/** @format */
+
+html {
+
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-sans);
+  font-size: var(--fs-base);
+  font-weight: 400;
+  letter-spacing: 0.07rem;
+  line-height: 1.6;
+  color: var(--color-text);
+  background: var(--color-main);
+ 
+  section{
+    padding-top: var(--nav-height);
+    height: 100vh;
+  }
+}
