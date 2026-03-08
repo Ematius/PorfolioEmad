@@ -30,7 +30,7 @@ export function Footer({ translation }: FooterProps) {
               rel="noreferrer"
               aria-label="LinkedIn"
               title="LinkedIn">
-              <img src="/public/icons/linkedin.svg" alt="" />
+              <img src="/icons/linkedin.svg" alt="" />
             </a>
 
             <a
@@ -40,7 +40,7 @@ export function Footer({ translation }: FooterProps) {
               rel="noreferrer"
               aria-label="GitHub"
               title="GitHub">
-              <img src="/public/icons/github.svg" alt="" />
+              <img src="/icons/github.svg" alt="" />
             </a>
           </div>
         </div>

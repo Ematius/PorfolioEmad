@@ -20,7 +20,7 @@ const stackCards = [
       "Jest",
       "Postman",
     ],
-    img: "/public/icons/code.svg",
+    img: "/icons/code.svg",
   },
   {
     id: "backend",
@@ -37,13 +37,13 @@ const stackCards = [
       "MySQL",
       "MongoDB",
     ],
-    img: "/public/icons/database.svg",
+    img: "/icons/database.svg",
   },
   {
     id: "devops",
     title: "DevOps",
     tech: ["Vercel","Netlify", "Railway", "CI/CD", "GitHub"],
-    img: "/public/icons/world-upload.svg",
+    img: "/icons/world-upload.svg",
   },
 ];
 

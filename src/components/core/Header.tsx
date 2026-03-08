@@ -33,7 +33,7 @@ export function Header({
           aria-label={isMenuOpen ? "Close menu" : "Open menu"}
           aria-expanded={isMenuOpen}
           onClick={() => setIsMenuOpen((prevState) => !prevState)}>
-          <img src="/public/icons/menu.svg" alt="" />
+          <img src="/icons/menu.svg" alt="" />
         </button>
 
         <div className={`${styles.menu} ${isMenuOpen ? styles.menuOpen : ""}`}>
