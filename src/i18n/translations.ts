@@ -116,7 +116,7 @@ export const translations = {
     },
     hero: {
       available: "AVAILABLE FOR PROJECTS",
-      h1: "Hello, i'am",
+      h1: "Hello, i am",
       presentation:
         "Full-Stack Developer dedicated to developing scalable, modern applications with high adaptability and an optimistic and cheerful learning style.",
       Projects: "View Proyectos",
