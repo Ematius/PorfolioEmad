@@ -1,3 +1,5 @@
+/** @format */
+
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import type { ThreeEvent } from "@react-three/fiber";
@@ -5,9 +7,10 @@ import { Edges, RoundedBox } from "@react-three/drei";
 import * as THREE from "three";
 
 type AiLabScene3DProps = {
-  activeSection: "projects" | null;
+  activeSection: "projects" | "journey" | null;
   onReady: () => void;
   onSelectProjects: () => void;
+  onSelectJourney: () => void;
 };
 
 type MonolithProps = {
@@ -19,7 +22,9 @@ type MonolithProps = {
   onSelect?: () => void;
 };
 
-function CameraRig({ activeSection }: Pick<AiLabScene3DProps, "activeSection">) {
+function CameraRig({
+  activeSection,
+}: Pick<AiLabScene3DProps, "activeSection">) {
   const { camera, pointer } = useThree();
   const currentLookAt = useRef(new THREE.Vector3(0, 0.35, 0));
   const desiredPosition = useMemo(() => new THREE.Vector3(), []);
@@ -29,6 +34,9 @@ function CameraRig({ activeSection }: Pick<AiLabScene3DProps, "activeSection">) 
     if (activeSection === "projects") {
       desiredPosition.set(-3.45, 2.15, 5.5);
       desiredLookAt.set(-3.45, 0.15, 0);
+    } else if (activeSection === "journey") {
+        desiredPosition.set(0, 2.35, 5.25);
+        desiredLookAt.set(0, 0.55, -0.35);
     } else {
       desiredPosition.set(pointer.x * 0.32, 2.65 + pointer.y * 0.14, 10.8);
       desiredLookAt.set(pointer.x * 0.12, 0.35 + pointer.y * 0.06, 0);
@@ -78,7 +86,9 @@ function Monolith({
     );
     material.emissiveIntensity = THREE.MathUtils.damp(
       material.emissiveIntensity,
-      active ? 1.25 : hovered ? 0.72 : 0.2,
+      active ? 1.25
+      : hovered ? 0.72
+      : 0.2,
       5,
       delta,
     );
@@ -110,8 +120,7 @@ function Monolith({
         smoothness={3}
         onPointerOver={handlePointerOver}
         onPointerOut={handlePointerOut}
-        onClick={handleClick}
-      >
+        onClick={handleClick}>
         <meshStandardMaterial
           ref={materialRef}
           color="#02070d"
@@ -133,6 +142,7 @@ function Monolith({
 function Scene({
   activeSection,
   onSelectProjects,
+  onSelectJourney,
 }: Omit<AiLabScene3DProps, "onReady">) {
   return (
     <>
@@ -166,6 +176,9 @@ function Scene({
       <Monolith
         dimensions={[2.5, 5.15, 1.35]}
         position={[0, 0.57, -0.35]}
+        interactive
+        active={activeSection === "journey"}
+        onSelect={onSelectJourney}
       />
       <Monolith
         dimensions={[2.35, 4.25, 1.25]}
@@ -189,6 +202,7 @@ export default function AiLabScene3D({
   activeSection,
   onReady,
   onSelectProjects,
+  onSelectJourney,
 }: AiLabScene3DProps) {
   return (
     <Canvas
@@ -198,11 +212,11 @@ export default function AiLabScene3D({
       onCreated={({ gl }) => {
         gl.setClearColor(0x000000, 0);
         window.requestAnimationFrame(onReady);
-      }}
-    >
+      }}>
       <Scene
         activeSection={activeSection}
         onSelectProjects={onSelectProjects}
+        onSelectJourney={onSelectJourney}
       />
     </Canvas>
   );

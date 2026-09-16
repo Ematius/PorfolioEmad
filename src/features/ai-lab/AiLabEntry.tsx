@@ -46,6 +46,7 @@ function prefersReducedMotion(): boolean {
 export default function AiLabEntry({ translation }: AiLabEntryProps) {
   const location = useLocation();
   const projectButtonRef = useRef<HTMLButtonElement>(null);
+  const journeyButtonRef = useRef<HTMLButtonElement>(null);
   const closePanelRef = useRef<HTMLButtonElement>(null);
   const navigationState = location.state as EntryState | null;
   const isCinematicEntry = navigationState?.entry === "cinematic";
@@ -54,7 +55,9 @@ export default function AiLabEntry({ translation }: AiLabEntryProps) {
   const [isAwake, setIsAwake] = useState(reducedMotion || isSkipEntry);
   const [isWebglReady, setIsWebglReady] = useState(false);
   const [isWebglPresented, setIsWebglPresented] = useState(false);
-  const [activeSection, setActiveSection] = useState<"projects" | null>(null);
+  const [activeSection, setActiveSection] = useState<
+    "projects" | "journey" | null
+  >(null);
   const copy = translation.aiLab.awakening;
 
   const particles = useMemo<ParticleStyle[]>(
@@ -86,6 +89,9 @@ export default function AiLabEntry({ translation }: AiLabEntryProps) {
       if (activeSection === "projects") {
         setActiveSection(null);
         window.requestAnimationFrame(() => projectButtonRef.current?.focus());
+      } else if (activeSection === "journey") {
+        setActiveSection(null);
+        window.requestAnimationFrame(() => journeyButtonRef.current?.focus());
       } else if (!isAwake) {
         setIsAwake(true);
       }
@@ -96,8 +102,12 @@ export default function AiLabEntry({ translation }: AiLabEntryProps) {
   }, [activeSection, isAwake]);
 
   useEffect(() => {
-    if (activeSection !== "projects") return;
-    const frame = window.requestAnimationFrame(() => closePanelRef.current?.focus());
+    if (activeSection === null) return;
+
+    const frame = window.requestAnimationFrame(() =>
+      closePanelRef.current?.focus(),
+    );
+
     return () => window.cancelAnimationFrame(frame);
   }, [activeSection]);
 
@@ -119,6 +129,17 @@ export default function AiLabEntry({ translation }: AiLabEntryProps) {
     setActiveSection(null);
     window.requestAnimationFrame(() => projectButtonRef.current?.focus());
   };
+
+  const openJourney = () => {
+    if (!isAwake) return;
+    setActiveSection("journey");
+  };
+
+  const closeJourney = () => {
+    setActiveSection(null);
+     window.requestAnimationFrame(() => journeyButtonRef.current?.focus());
+  };
+  
 
   const sceneClassName = [
     styles.AiLabEntry,
@@ -143,11 +164,7 @@ export default function AiLabEntry({ translation }: AiLabEntryProps) {
 
       <div className={styles.particles} aria-hidden="true">
         {particles.map((particleStyle, index) => (
-          <span
-            key={index}
-            className={styles.particle}
-            style={particleStyle}
-          />
+          <span key={index} className={styles.particle} style={particleStyle} />
         ))}
       </div>
 
@@ -157,14 +174,14 @@ export default function AiLabEntry({ translation }: AiLabEntryProps) {
         className={`${styles.scene3d} ${
           isWebglReady ? styles.scene3dReady : ""
         }`}
-        aria-hidden="true"
-      >
+        aria-hidden="true">
         <AiLabSceneBoundary>
           <Suspense fallback={null}>
             <AiLabScene3D
               activeSection={activeSection}
               onReady={() => setIsWebglReady(true)}
               onSelectProjects={openProjects}
+              onSelectJourney={openJourney}
             />
           </Suspense>
         </AiLabSceneBoundary>
@@ -176,17 +193,16 @@ export default function AiLabEntry({ translation }: AiLabEntryProps) {
           type="button"
           className={`${styles.monolith} ${styles.monolithLeft}`}
           onClick={openProjects}
-          disabled={!isAwake || activeSection !== null}
-        >
+          disabled={!isAwake || activeSection !== null}>
           <span className={styles.monolithIndex}>01</span>
           <span className={styles.monolithTitle}>{copy.projects}</span>
         </button>
         <button
+          ref={journeyButtonRef}
           type="button"
           className={`${styles.monolith} ${styles.monolithCenter}`}
-          disabled
-          title={copy.comingSoon}
-        >
+          onClick={openJourney}
+          disabled={!isAwake || activeSection !== null}>
           <span className={styles.monolithIndex}>02</span>
           <span className={styles.monolithTitle}>{copy.journey}</span>
         </button>
@@ -194,8 +210,7 @@ export default function AiLabEntry({ translation }: AiLabEntryProps) {
           type="button"
           className={`${styles.monolith} ${styles.monolithRight}`}
           disabled
-          title={copy.comingSoon}
-        >
+          title={copy.comingSoon}>
           <span className={styles.monolithIndex}>03</span>
           <span className={styles.monolithTitle}>{copy.contact}</span>
         </button>
@@ -205,8 +220,7 @@ export default function AiLabEntry({ translation }: AiLabEntryProps) {
         <button
           type="button"
           className={styles.skipIntro}
-          onClick={() => setIsAwake(true)}
-        >
+          onClick={() => setIsAwake(true)}>
           {copy.skip}
         </button>
       )}
@@ -226,14 +240,15 @@ export default function AiLabEntry({ translation }: AiLabEntryProps) {
         <Link
           to="/"
           className={styles.returnButton}
-          tabIndex={isAwake ? 0 : -1}
-        >
+          tabIndex={isAwake ? 0 : -1}>
           {translation.aiLab.returnButton}
         </Link>
       </div>
 
       {activeSection === "projects" && (
-        <aside className={styles.projectsPanel} aria-label={copy.projectsPanelTitle}>
+        <aside
+          className={styles.projectsPanel}
+          aria-label={copy.projectsPanelTitle}>
           <div className={styles.projectsPanelHeader}>
             <div>
               <p>{copy.projectsPanelEyebrow}</p>
@@ -244,8 +259,7 @@ export default function AiLabEntry({ translation }: AiLabEntryProps) {
               type="button"
               className={styles.closePanel}
               onClick={closeProjects}
-              aria-label={copy.closeProjects}
-            >
+              aria-label={copy.closeProjects}>
               ×
             </button>
           </div>
@@ -257,8 +271,7 @@ export default function AiLabEntry({ translation }: AiLabEntryProps) {
                 className={styles.projectCard}
                 href={project.url}
                 target="_blank"
-                rel="noopener noreferrer"
-              >
+                rel="noopener noreferrer">
                 <img src={project.image} alt="" />
                 <div>
                   <h3>{project.title}</h3>
