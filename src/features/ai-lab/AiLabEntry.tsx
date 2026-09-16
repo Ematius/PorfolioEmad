@@ -10,7 +10,12 @@ type AiLabEntryProps = {
 export default function AiLabEntry({ translation }: AiLabEntryProps) {
   return (
     <section className={styles.AiLabEntry} aria-label="AI Lab">
+      <div className={styles.portal} aria-hidden="true">
+        <span className={styles.portalRing} />
+        <span className={styles.portalCore} />
+      </div>
       <div className={styles.content}>
+        <p className={styles.eyebrow}>{translation.aiLab.attribution}</p>
         <h1>{translation.aiLab.title}</h1>
         <p>{translation.aiLab.description}</p>
         <Link to="/" className={styles.returnButton}>

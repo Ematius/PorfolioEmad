@@ -224,4 +224,3 @@ Perform a read-only audit and provide:
 10. Risks affecting performance, mobile behavior or deployment.
 
 Wait for approval before editing code or installing dependencies.
-

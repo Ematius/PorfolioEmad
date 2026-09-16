@@ -5,11 +5,13 @@ import styles from "./AiLabActivationButton.module.scss";
 type AiLabActivationButtonProps = {
   translation: (typeof translations)[Lang];
   onActivate: () => void;
+  disabled?: boolean;
 };
 
 export function AiLabActivationButton({
   translation,
   onActivate,
+  disabled = false,
 }: AiLabActivationButtonProps) {
   const { label, labelShort, ariaLabel } = translation.aiLab.activation;
 
@@ -19,6 +21,7 @@ export function AiLabActivationButton({
       className={styles.activationButton}
       onClick={onActivate}
       aria-label={ariaLabel}
+      disabled={disabled}
     >
       <span className={styles.singularity} aria-hidden="true" />
       <span className={styles.label} aria-hidden="true">

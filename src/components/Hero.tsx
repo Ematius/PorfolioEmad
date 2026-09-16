@@ -49,8 +49,12 @@ const stackCards = [
 
 type HeroProps = {
   translation: (typeof translations)[Lang];
+  isAiLabTransitioning?: boolean;
 };
-export function Hero({ translation }: HeroProps) {
+export function Hero({
+  translation,
+  isAiLabTransitioning = false,
+}: HeroProps) {
   return (
     <section id="hero" className={styles.Hero}>
       <div className={styles.topHero}>
@@ -95,7 +99,12 @@ export function Hero({ translation }: HeroProps) {
           </div>
         </article>
 
-        <div className={styles.photo} aria-label="Foto de Emad">
+        <div
+          className={`${styles.photo} ${
+            isAiLabTransitioning ? styles.photoTransitioning : ""
+          }`}
+          aria-label="Foto de Emad"
+        >
           <img src="/FotoEmad.png" alt="Foto de Emad" />
         </div>
       </div>

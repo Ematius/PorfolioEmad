@@ -107,6 +107,7 @@ export const translations = {
     },
     aiLab: {
       title: "AI Lab",
+      attribution: "Creado con Claude y herramientas de IA",
       description:
         "Esta es una pantalla provisional. El universo de AI Lab todavía no se ha construido.",
       returnButton: "Volver al portafolio",
@@ -119,6 +120,13 @@ export const translations = {
         label: "ACTIVAR AI LAB",
         labelShort: "AI LAB",
         ariaLabel: "Activar AI Lab",
+      },
+      transition: {
+        ariaLabel: "Transición hacia AI Lab",
+        loading: "Preparando AI Lab...",
+        skip: "Saltar transición",
+        mute: "Silenciar",
+        unmute: "Activar sonido",
       },
     },
   },
@@ -229,6 +237,7 @@ export const translations = {
     },
     aiLab: {
       title: "AI Lab",
+      attribution: "Created with Claude and AI tools",
       description:
         "This is a temporary placeholder screen. The AI Lab universe has not been built yet.",
       returnButton: "Return to portfolio",
@@ -241,6 +250,13 @@ export const translations = {
         label: "ACTIVATE AI LAB",
         labelShort: "AI LAB",
         ariaLabel: "Activate AI Lab",
+      },
+      transition: {
+        ariaLabel: "Transition to AI Lab",
+        loading: "Preparing AI Lab...",
+        skip: "Skip transition",
+        mute: "Mute",
+        unmute: "Turn sound on",
       },
     },
   },
