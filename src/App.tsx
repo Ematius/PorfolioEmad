@@ -61,7 +61,7 @@ function App() {
     if (prefersReducedMotion()) {
       const scrollingElement = document.scrollingElement;
       if (scrollingElement) scrollingElement.scrollTop = 0;
-      navigate("/ai-lab");
+      navigate("/ai-lab", { state: { entry: "skip" } });
       return;
     }
 
@@ -116,7 +116,7 @@ function App() {
     scrollAnimationFrameRef.current = window.requestAnimationFrame(animateScroll);
   };
 
-  const handleEnterAiLab = () => {
+  const enterAiLab = (entry: "cinematic" | "skip") => {
     if (scrollAnimationFrameRef.current !== null) {
       window.cancelAnimationFrame(scrollAnimationFrameRef.current);
       scrollAnimationFrameRef.current = null;
@@ -127,8 +127,11 @@ function App() {
       previousScrollBehaviorRef.current = null;
     }
     setAiLabTransitionPhase("idle");
-    navigate("/ai-lab");
+    navigate("/ai-lab", { state: { entry } });
   };
+
+  const handleCompleteAiLabTransition = () => enterAiLab("cinematic");
+  const handleSkipAiLabTransition = () => enterAiLab("skip");
 
   return (
     <Routes>
@@ -156,9 +159,9 @@ function App() {
             {aiLabTransitionPhase === "playing" && (
               <AiLabTransitionOverlay
                 translation={translations[lang]}
-                onComplete={handleEnterAiLab}
-                onSkip={handleEnterAiLab}
-                onError={handleEnterAiLab}
+                onComplete={handleCompleteAiLabTransition}
+                onSkip={handleSkipAiLabTransition}
+                onError={handleSkipAiLabTransition}
               />
             )}
           </>

@@ -1,135 +1,405 @@
 .AiLabEntry {
+  --particles-duration: 2.8s;
+  --particles-delay: 0.65s;
+  --light-duration: 3.2s;
+  --light-delay: 2.1s;
+  --horizon-duration: 2.4s;
+  --horizon-delay: 2.8s;
+  --monolith-duration: 2s;
+  --monolith-delay-left: 3.45s;
+  --monolith-delay-center: 3.7s;
+  --monolith-delay-right: 3.95s;
   position: relative;
+  isolation: isolate;
+  width: 100%;
+  height: 100svh;
+  min-height: 36rem;
   overflow: hidden;
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  padding: 0;
   background: #000;
   color: #fff;
-  padding: var(--space-7);
-  text-align: center;
+}
+
+.directEntry {
+  --particles-duration: 1.35s;
+  --particles-delay: 0.3s;
+  --light-duration: 1.55s;
+  --light-delay: 1s;
+  --horizon-duration: 1.15s;
+  --horizon-delay: 1.35s;
+  --monolith-duration: 0.95s;
+  --monolith-delay-left: 1.65s;
+  --monolith-delay-center: 1.78s;
+  --monolith-delay-right: 1.9s;
+}
+
+.void {
+  position: absolute;
+  inset: 0;
+  z-index: -5;
+  background:
+    radial-gradient(circle at 50% 72%, rgba(0, 55, 104, 0.08), transparent 28%),
+    #000;
+}
+
+.distantLight {
+  position: absolute;
+  z-index: -3;
+  left: 50%;
+  top: 64%;
+  width: min(58vw, 54rem);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(63, 181, 255, 0.2) 0%,
+    rgba(0, 103, 193, 0.07) 18%,
+    transparent 68%
+  );
+  filter: blur(20px);
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(0.3);
+  animation: light-awakening var(--light-duration) var(--light-delay) ease-out
+    forwards;
+}
+
+.particles {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  overflow: hidden;
+  opacity: 0;
+  animation: particles-awakening var(--particles-duration) var(--particles-delay)
+    ease-out forwards;
+}
+
+.particle {
+  position: absolute;
+  left: var(--particle-x);
+  top: var(--particle-y);
+  width: var(--particle-size);
+  height: var(--particle-size);
+  border-radius: 50%;
+  background: rgba(173, 223, 255, 0.88);
+  box-shadow: 0 0 8px rgba(37, 154, 255, 0.7);
+  opacity: 0.12;
+  animation: particle-drift var(--particle-duration) var(--particle-delay)
+    ease-in-out infinite alternate;
+}
+
+.horizon {
+  position: absolute;
+  z-index: -1;
+  left: 50%;
+  bottom: 8%;
+  width: min(78vw, 76rem);
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(0, 143, 255, 0.15) 24%,
+    rgba(94, 195, 255, 0.48) 50%,
+    rgba(0, 143, 255, 0.15) 76%,
+    transparent
+  );
+  box-shadow: 0 -10px 60px rgba(0, 103, 190, 0.18);
+  opacity: 0;
+  transform: translateX(-50%) scaleX(0.2);
+  animation: horizon-awakening var(--horizon-duration) var(--horizon-delay)
+    ease-out forwards;
+}
+
+.monolithField {
+  position: absolute;
+  left: 50%;
+  bottom: 10%;
+  width: min(74rem, calc(100% - 8rem));
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-items: end;
+  gap: clamp(1.5rem, 5vw, 6rem);
+  perspective: 900px;
+  transform: translateX(-50%);
+}
+
+.monolith {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  min-height: clamp(14rem, 33vh, 25rem);
+  padding: clamp(1rem, 2vw, 1.75rem);
+  overflow: hidden;
+  border: 1px solid rgba(49, 150, 220, 0.18);
+  background:
+    linear-gradient(145deg, rgba(14, 34, 49, 0.5), rgba(0, 4, 9, 0.92) 54%),
+    #010307;
+  box-shadow:
+    0 0 0 1px rgba(0, 0, 0, 0.6),
+    0 26px 70px rgba(0, 0, 0, 0.8),
+    inset 0 0 60px rgba(0, 76, 135, 0.04);
+  clip-path: polygon(8% 0, 92% 4%, 100% 94%, 88% 100%, 3% 96%, 0 8%);
+  opacity: 0;
+  transform: translateY(5rem) rotateX(9deg) scale(0.86);
+  animation: monolith-awakening var(--monolith-duration)
+    var(--monolith-delay-left) cubic-bezier(0.16, 1, 0.3, 1) forwards;
 
   &::before {
     content: "";
     position: absolute;
     inset: 0;
-    background: radial-gradient(circle at center, rgba(0, 137, 255, 0.16), transparent 38%);
-    pointer-events: none;
+    background: linear-gradient(
+      115deg,
+      transparent 22%,
+      rgba(55, 170, 255, 0.08) 49%,
+      transparent 72%
+    );
+    transform: translateX(-100%);
   }
 
-  .portal {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    width: min(52vw, 38rem);
-    aspect-ratio: 1;
-    transform: translate(-50%, -50%);
-    opacity: 0.72;
-    pointer-events: none;
-  }
-
-  .portalRing,
-  .portalCore {
-    position: absolute;
-    inset: 0;
-    border-radius: 50%;
-  }
-
-  .portalRing {
-    border: 2px solid rgba(28, 154, 255, 0.8);
-    box-shadow:
-      0 0 16px rgba(0, 140, 255, 0.85),
-      inset 0 0 20px rgba(0, 140, 255, 0.45),
-      0 0 80px rgba(0, 105, 255, 0.28);
-    animation: portal-pulse 3.2s ease-in-out infinite;
-  }
-
-  .portalCore {
-    inset: 16%;
-    background: radial-gradient(circle, #020812 0%, #000 68%);
-    box-shadow: 0 0 60px rgba(0, 140, 255, 0.32);
-  }
-
-  .content {
+  h2 {
     position: relative;
-    z-index: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: var(--space-5);
-    max-width: 46ch;
-    padding: var(--space-7);
-    border: 1px solid rgba(46, 166, 255, 0.22);
-    border-radius: var(--radius-m);
-    background: rgba(0, 6, 14, 0.64);
-    box-shadow: 0 24px 80px rgba(0, 0, 0, 0.65);
-    backdrop-filter: blur(14px);
+    margin: 0;
+    color: rgba(225, 242, 255, 0.88);
+    font-size: clamp(0.85rem, 1.3vw, 1.1rem);
+    font-weight: 500;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+  }
+}
 
-    h1 {
-      font-size: var(--fs-4xl);
-      color: #249eff;
-      text-shadow: 0 0 28px rgba(0, 140, 255, 0.48);
-    }
+.monolithCenter {
+  min-height: clamp(17rem, 39vh, 29rem);
+  animation-delay: var(--monolith-delay-center);
+}
 
-    p {
-      color: rgba(226, 239, 250, 0.78);
+.monolithRight {
+  animation-delay: var(--monolith-delay-right);
+}
+
+.monolithIndex {
+  position: relative;
+  margin-bottom: 0.25rem;
+  color: rgba(69, 177, 255, 0.55);
+  font-size: 0.68rem;
+  letter-spacing: 0.2em;
+}
+
+.interfaceHeader,
+.interfaceFooter {
+  position: absolute;
+  left: clamp(1rem, 3vw, 3rem);
+  right: clamp(1rem, 3vw, 3rem);
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  color: rgba(169, 207, 232, 0.5);
+  font-size: clamp(0.6rem, 0.9vw, 0.75rem);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  opacity: 0;
+  transition: opacity 800ms ease;
+
+  p {
+    margin: 0;
+  }
+}
+
+.interfaceHeader {
+  top: calc(1.4rem + env(safe-area-inset-top));
+}
+
+.interfaceFooter {
+  bottom: calc(1.2rem + env(safe-area-inset-bottom));
+}
+
+.systemLabel {
+  color: rgba(90, 190, 255, 0.82);
+  font-size: 0.72rem;
+}
+
+.systemStatus {
+  margin-top: 0.15rem !important;
+}
+
+.returnButton,
+.skipIntro {
+  min-height: 44px;
+  padding: 0.65rem 1rem;
+  border: 1px solid rgba(70, 177, 255, 0.34);
+  border-radius: 999px;
+  background: rgba(1, 9, 17, 0.64);
+  color: rgba(221, 241, 255, 0.82);
+  font: inherit;
+  font-size: var(--fs-xs);
+  letter-spacing: 0.05em;
+  text-decoration: none;
+  cursor: pointer;
+  backdrop-filter: blur(10px);
+
+  &:hover {
+    border-color: rgba(84, 188, 255, 0.78);
+    color: #fff;
+  }
+
+  &:focus-visible {
+    outline: 2px solid #58bdff;
+    outline-offset: 3px;
+  }
+}
+
+.skipIntro {
+  position: absolute;
+  top: calc(1rem + env(safe-area-inset-top));
+  right: calc(1rem + env(safe-area-inset-right));
+  z-index: 5;
+  opacity: 0;
+  animation: skip-appears 500ms 1s ease forwards;
+}
+
+.isAwake {
+  .distantLight {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+    animation: light-breathe 5s ease-in-out infinite alternate;
+  }
+
+  .particles,
+  .horizon,
+  .monolith,
+  .interfaceHeader,
+  .interfaceFooter {
+    opacity: 1;
+  }
+
+  .particles,
+  .horizon,
+  .monolith {
+    animation: none;
+  }
+
+  .horizon {
+    transform: translateX(-50%) scaleX(1);
+  }
+
+  .monolith {
+    transform: translateY(0) rotateX(0) scale(1);
+    transition:
+      opacity 700ms ease,
+      transform 900ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+}
+
+@keyframes particles-awakening {
+  to { opacity: 1; }
+}
+
+@keyframes particle-drift {
+  0% {
+    opacity: 0.08;
+    transform: translate3d(0, 10px, 0) scale(0.8);
+  }
+  100% {
+    opacity: 0.62;
+    transform: translate3d(var(--particle-drift), -24px, 0) scale(1.25);
+  }
+}
+
+@keyframes light-awakening {
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+@keyframes light-breathe {
+  from { opacity: 0.58; transform: translate(-50%, -50%) scale(0.94); }
+  to { opacity: 0.9; transform: translate(-50%, -50%) scale(1.06); }
+}
+
+@keyframes horizon-awakening {
+  to { opacity: 1; transform: translateX(-50%) scaleX(1); }
+}
+
+@keyframes monolith-awakening {
+  to {
+    opacity: 1;
+    transform: translateY(0) rotateX(0) scale(1);
+  }
+}
+
+@keyframes skip-appears {
+  to { opacity: 1; }
+}
+
+@media (max-width: 760px) {
+  .AiLabEntry {
+    min-height: 32rem;
+  }
+
+  .monolithField {
+    bottom: 14%;
+    width: calc(100% - 2rem);
+    gap: 0.6rem;
+  }
+
+  .monolith {
+    min-height: 12.5rem;
+    padding: 0.75rem;
+
+    h2 {
+      writing-mode: vertical-rl;
+      transform: rotate(180deg);
     }
   }
 
-  .eyebrow {
-    color: #61bdff !important;
-    font-size: var(--fs-xs);
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
+  .monolithCenter {
+    min-height: 16rem;
+  }
+
+  .interfaceHeader > p {
+    max-width: 22ch;
+  }
+
+  .interfaceFooter {
+    align-items: flex-end;
   }
 
   .returnButton {
-    display: inline-block;
-    background-color: var(--color-button);
-    color: #fff;
-    border: 1px solid rgba(91, 183, 255, 0.7);
-    border-radius: var(--radius-s);
-    padding: var(--space-3) var(--space-6);
-    text-decoration: none;
-
-    &:hover {
-      background-color: var(--color-button-hover);
-    }
-
-    &:focus-visible {
-      outline: 2px solid #58bdff;
-      outline-offset: 3px;
-    }
-  }
-}
-
-@keyframes portal-pulse {
-  0%,
-  100% {
-    opacity: 0.55;
-    transform: scale(0.97);
-  }
-  50% {
-    opacity: 1;
-    transform: scale(1.03);
-  }
-}
-
-@media (max-width: 680px) {
-  .AiLabEntry {
-    .portal {
-      width: 92vw;
-    }
-
-    .content {
-      padding: var(--space-5);
-    }
+    max-width: 12rem;
+    text-align: center;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .AiLabEntry .portalRing {
+  .distantLight,
+  .particles,
+  .horizon,
+  .monolith,
+  .skipIntro {
     animation: none;
+  }
+
+  .distantLight,
+  .particles,
+  .horizon,
+  .monolith,
+  .interfaceHeader,
+  .interfaceFooter {
+    opacity: 1;
+  }
+
+  .distantLight {
+    transform: translate(-50%, -50%) scale(1);
+  }
+
+  .horizon {
+    transform: translateX(-50%) scaleX(1);
+  }
+
+  .monolith {
+    transform: none;
   }
 }
