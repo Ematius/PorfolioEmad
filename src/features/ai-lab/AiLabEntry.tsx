@@ -1,9 +1,20 @@
-import { useEffect, useMemo, useState } from "react";
+import {
+  lazy,
+  Suspense,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import type { CSSProperties } from "react";
 import { Link, useLocation } from "react-router";
+import { projects } from "../../data/projects";
 import { translations } from "../../i18n/translations";
 import type { Lang } from "../../i18n/translations";
+import { AiLabSceneBoundary } from "./scene/AiLabSceneBoundary";
 import styles from "./AiLabEntry.module.scss";
+
+const AiLabScene3D = lazy(() => import("./scene/AiLabScene3D"));
 
 type AiLabEntryProps = {
   translation: (typeof translations)[Lang];
@@ -34,11 +45,16 @@ function prefersReducedMotion(): boolean {
 
 export default function AiLabEntry({ translation }: AiLabEntryProps) {
   const location = useLocation();
+  const projectButtonRef = useRef<HTMLButtonElement>(null);
+  const closePanelRef = useRef<HTMLButtonElement>(null);
   const navigationState = location.state as EntryState | null;
   const isCinematicEntry = navigationState?.entry === "cinematic";
   const isSkipEntry = navigationState?.entry === "skip";
   const reducedMotion = prefersReducedMotion();
   const [isAwake, setIsAwake] = useState(reducedMotion || isSkipEntry);
+  const [isWebglReady, setIsWebglReady] = useState(false);
+  const [isWebglPresented, setIsWebglPresented] = useState(false);
+  const [activeSection, setActiveSection] = useState<"projects" | null>(null);
   const copy = translation.aiLab.awakening;
 
   const particles = useMemo<ParticleStyle[]>(
@@ -63,10 +79,59 @@ export default function AiLabEntry({ translation }: AiLabEntryProps) {
     return () => window.clearTimeout(timer);
   }, [isAwake, isCinematicEntry, reducedMotion]);
 
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key !== "Escape") return;
+
+      if (activeSection === "projects") {
+        setActiveSection(null);
+        window.requestAnimationFrame(() => projectButtonRef.current?.focus());
+      } else if (!isAwake) {
+        setIsAwake(true);
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [activeSection, isAwake]);
+
+  useEffect(() => {
+    if (activeSection !== "projects") return;
+    const frame = window.requestAnimationFrame(() => closePanelRef.current?.focus());
+    return () => window.cancelAnimationFrame(frame);
+  }, [activeSection]);
+
+  useEffect(() => {
+    if (!isAwake || !isWebglReady) return;
+    const timer = window.setTimeout(
+      () => setIsWebglPresented(true),
+      reducedMotion ? 0 : 850,
+    );
+    return () => window.clearTimeout(timer);
+  }, [isAwake, isWebglReady, reducedMotion]);
+
+  const openProjects = () => {
+    if (!isAwake) return;
+    setActiveSection("projects");
+  };
+
+  const closeProjects = () => {
+    setActiveSection(null);
+    window.requestAnimationFrame(() => projectButtonRef.current?.focus());
+  };
+
   const sceneClassName = [
     styles.AiLabEntry,
     isCinematicEntry ? styles.cinematicEntry : styles.directEntry,
     isAwake ? styles.isAwake : "",
+    activeSection ? styles.hasActiveSection : "",
+  ]
+    .filter(Boolean)
+    .join(" ");
+
+  const monolithFieldClassName = [
+    styles.monolithField,
+    isWebglPresented ? styles.webglLabels : "",
   ]
     .filter(Boolean)
     .join(" ");
@@ -88,19 +153,52 @@ export default function AiLabEntry({ translation }: AiLabEntryProps) {
 
       <div className={styles.horizon} aria-hidden="true" />
 
-      <div className={styles.monolithField} aria-hidden={!isAwake}>
-        <article className={`${styles.monolith} ${styles.monolithLeft}`}>
+      <div
+        className={`${styles.scene3d} ${
+          isWebglReady ? styles.scene3dReady : ""
+        }`}
+        aria-hidden="true"
+      >
+        <AiLabSceneBoundary>
+          <Suspense fallback={null}>
+            <AiLabScene3D
+              activeSection={activeSection}
+              onReady={() => setIsWebglReady(true)}
+              onSelectProjects={openProjects}
+            />
+          </Suspense>
+        </AiLabSceneBoundary>
+      </div>
+
+      <div className={monolithFieldClassName} aria-hidden={!isAwake}>
+        <button
+          ref={projectButtonRef}
+          type="button"
+          className={`${styles.monolith} ${styles.monolithLeft}`}
+          onClick={openProjects}
+          disabled={!isAwake || activeSection !== null}
+        >
           <span className={styles.monolithIndex}>01</span>
-          <h2>{copy.projects}</h2>
-        </article>
-        <article className={`${styles.monolith} ${styles.monolithCenter}`}>
+          <span className={styles.monolithTitle}>{copy.projects}</span>
+        </button>
+        <button
+          type="button"
+          className={`${styles.monolith} ${styles.monolithCenter}`}
+          disabled
+          title={copy.comingSoon}
+        >
           <span className={styles.monolithIndex}>02</span>
-          <h2>{copy.journey}</h2>
-        </article>
-        <article className={`${styles.monolith} ${styles.monolithRight}`}>
+          <span className={styles.monolithTitle}>{copy.journey}</span>
+        </button>
+        <button
+          type="button"
+          className={`${styles.monolith} ${styles.monolithRight}`}
+          disabled
+          title={copy.comingSoon}
+        >
           <span className={styles.monolithIndex}>03</span>
-          <h2>{copy.contact}</h2>
-        </article>
+          <span className={styles.monolithTitle}>{copy.contact}</span>
+        </button>
       </div>
 
       {!isAwake && (
@@ -115,7 +213,7 @@ export default function AiLabEntry({ translation }: AiLabEntryProps) {
 
       <header className={styles.interfaceHeader}>
         <p>{translation.aiLab.attribution}</p>
-        <span aria-hidden="true">AI / 001</span>
+        <span aria-hidden="true">AI / 002</span>
       </header>
 
       <div className={styles.interfaceFooter}>
@@ -125,10 +223,53 @@ export default function AiLabEntry({ translation }: AiLabEntryProps) {
             {isAwake ? copy.ready : copy.awakening}
           </p>
         </div>
-        <Link to="/" className={styles.returnButton}>
+        <Link
+          to="/"
+          className={styles.returnButton}
+          tabIndex={isAwake ? 0 : -1}
+        >
           {translation.aiLab.returnButton}
         </Link>
       </div>
+
+      {activeSection === "projects" && (
+        <aside className={styles.projectsPanel} aria-label={copy.projectsPanelTitle}>
+          <div className={styles.projectsPanelHeader}>
+            <div>
+              <p>{copy.projectsPanelEyebrow}</p>
+              <h2>{copy.projectsPanelTitle}</h2>
+            </div>
+            <button
+              ref={closePanelRef}
+              type="button"
+              className={styles.closePanel}
+              onClick={closeProjects}
+              aria-label={copy.closeProjects}
+            >
+              ×
+            </button>
+          </div>
+
+          <div className={styles.projectList}>
+            {projects.map((project) => (
+              <a
+                key={project.id}
+                className={styles.projectCard}
+                href={project.url}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <img src={project.image} alt="" />
+                <div>
+                  <h3>{project.title}</h3>
+                  <p>{project.tech.join(" · ")}</p>
+                </div>
+                <span aria-hidden="true">↗</span>
+              </a>
+            ))}
+          </div>
+        </aside>
+      )}
     </section>
   );
 }

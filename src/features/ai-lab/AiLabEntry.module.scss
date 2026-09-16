@@ -109,6 +109,24 @@
     ease-out forwards;
 }
 
+.scene3d {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  opacity: 0;
+  transition: opacity 1.2s ease;
+
+  canvas {
+    display: block;
+    width: 100% !important;
+    height: 100% !important;
+  }
+}
+
+.isAwake .scene3dReady {
+  opacity: 1;
+}
+
 .monolithField {
   position: absolute;
   left: 50%;
@@ -120,6 +138,10 @@
   gap: clamp(1.5rem, 5vw, 6rem);
   perspective: 900px;
   transform: translateX(-50%);
+  z-index: 1;
+  transition:
+    opacity 650ms ease,
+    filter 650ms ease;
 }
 
 .monolith {
@@ -141,6 +163,10 @@
   clip-path: polygon(8% 0, 92% 4%, 100% 94%, 88% 100%, 3% 96%, 0 8%);
   opacity: 0;
   transform: translateY(5rem) rotateX(9deg) scale(0.86);
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
   animation: monolith-awakening var(--monolith-duration)
     var(--monolith-delay-left) cubic-bezier(0.16, 1, 0.3, 1) forwards;
 
@@ -157,7 +183,24 @@
     transform: translateX(-100%);
   }
 
-  h2 {
+  &:disabled {
+    cursor: default;
+  }
+
+  &:not(:disabled):hover,
+  &:not(:disabled):focus-visible {
+    border-color: rgba(72, 181, 255, 0.62);
+    box-shadow:
+      0 0 34px rgba(0, 122, 215, 0.16),
+      inset 0 0 70px rgba(0, 112, 201, 0.1);
+  }
+
+  &:focus-visible {
+    outline: 2px solid #58bdff;
+    outline-offset: 4px;
+  }
+
+  .monolithTitle {
     position: relative;
     margin: 0;
     color: rgba(225, 242, 255, 0.88);
@@ -165,6 +208,26 @@
     font-weight: 500;
     letter-spacing: 0.16em;
     text-transform: uppercase;
+  }
+}
+
+.webglLabels {
+  .monolith {
+    border-color: transparent;
+    background: transparent;
+    box-shadow: none;
+    clip-path: none;
+
+    &::before {
+      display: none;
+    }
+
+    &:not(:disabled):hover,
+    &:not(:disabled):focus-visible {
+      border-color: rgba(66, 185, 255, 0.18);
+      background: rgba(0, 31, 52, 0.06);
+      box-shadow: inset 0 0 70px rgba(0, 112, 201, 0.06);
+    }
   }
 }
 
@@ -247,6 +310,157 @@
   &:focus-visible {
     outline: 2px solid #58bdff;
     outline-offset: 3px;
+  }
+}
+
+.projectsPanel {
+  position: absolute;
+  z-index: 6;
+  top: clamp(4.5rem, 8vh, 7rem);
+  right: clamp(1rem, 4vw, 4rem);
+  bottom: clamp(5.5rem, 9vh, 7rem);
+  width: min(42rem, 46vw);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid rgba(73, 174, 241, 0.28);
+  border-radius: 1rem;
+  background: rgba(0, 7, 14, 0.86);
+  box-shadow:
+    0 32px 100px rgba(0, 0, 0, 0.78),
+    inset 0 0 80px rgba(0, 95, 165, 0.045);
+  backdrop-filter: blur(18px);
+  animation: projects-panel-in 850ms 380ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.projectsPanelHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: clamp(1.1rem, 2vw, 1.8rem);
+  border-bottom: 1px solid rgba(58, 160, 230, 0.16);
+
+  p {
+    margin: 0 0 0.2rem;
+    color: rgba(70, 181, 255, 0.62);
+    font-size: 0.68rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+
+  h2 {
+    margin: 0;
+    color: rgba(235, 247, 255, 0.94);
+    font-size: clamp(1.2rem, 2vw, 1.8rem);
+    font-weight: 500;
+  }
+}
+
+.closePanel {
+  flex: 0 0 auto;
+  width: 44px;
+  height: 44px;
+  border: 1px solid rgba(76, 180, 247, 0.28);
+  border-radius: 50%;
+  background: rgba(0, 18, 31, 0.7);
+  color: rgba(226, 243, 255, 0.88);
+  font: inherit;
+  font-size: 1.5rem;
+  line-height: 1;
+  cursor: pointer;
+
+  &:hover {
+    border-color: rgba(82, 190, 255, 0.72);
+  }
+
+  &:focus-visible {
+    outline: 2px solid #58bdff;
+    outline-offset: 3px;
+  }
+}
+
+.projectList {
+  display: grid;
+  gap: 0.75rem;
+  padding: clamp(1rem, 2vw, 1.6rem);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.projectCard {
+  display: grid;
+  grid-template-columns: clamp(5rem, 9vw, 7.5rem) 1fr auto;
+  align-items: center;
+  gap: 1rem;
+  min-height: 5.5rem;
+  overflow: hidden;
+  border: 1px solid rgba(62, 157, 220, 0.16);
+  border-radius: 0.7rem;
+  background: rgba(3, 15, 25, 0.7);
+  color: inherit;
+  text-decoration: none;
+  transition:
+    transform 180ms ease,
+    border-color 180ms ease,
+    background-color 180ms ease;
+
+  img {
+    width: 100%;
+    height: 100%;
+    min-height: 5.5rem;
+    object-fit: cover;
+    opacity: 0.72;
+  }
+
+  h3 {
+    margin: 0 0 0.25rem;
+    color: rgba(235, 247, 255, 0.92);
+    font-size: clamp(0.85rem, 1.2vw, 1rem);
+    font-weight: 500;
+  }
+
+  p {
+    margin: 0;
+    color: rgba(150, 190, 216, 0.58);
+    font-size: 0.7rem;
+  }
+
+  > span {
+    padding-right: 1rem;
+    color: rgba(76, 185, 255, 0.7);
+    font-size: 1.1rem;
+  }
+
+  &:hover,
+  &:focus-visible {
+    border-color: rgba(72, 181, 255, 0.52);
+    background: rgba(4, 27, 44, 0.82);
+    transform: translateX(-4px);
+  }
+
+  &:focus-visible {
+    outline: 2px solid #58bdff;
+    outline-offset: 2px;
+  }
+}
+
+.hasActiveSection {
+  .monolithField {
+    opacity: 0.16;
+    filter: blur(1px);
+    pointer-events: none;
+  }
+
+  .interfaceFooter {
+    opacity: 0.2;
+    pointer-events: none;
+  }
+}
+
+.isAwake.hasActiveSection {
+  .interfaceFooter {
+    opacity: 0.2;
   }
 }
 
@@ -334,6 +548,17 @@
   to { opacity: 1; }
 }
 
+@keyframes projects-panel-in {
+  from {
+    opacity: 0;
+    transform: translateX(3rem) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
 @media (max-width: 760px) {
   .AiLabEntry {
     min-height: 32rem;
@@ -349,7 +574,7 @@
     min-height: 12.5rem;
     padding: 0.75rem;
 
-    h2 {
+    .monolithTitle {
       writing-mode: vertical-rl;
       transform: rotate(180deg);
     }
@@ -370,6 +595,18 @@
   .returnButton {
     max-width: 12rem;
     text-align: center;
+  }
+
+  .projectsPanel {
+    top: calc(4rem + env(safe-area-inset-top));
+    right: 0.75rem;
+    bottom: calc(4.75rem + env(safe-area-inset-bottom));
+    left: 0.75rem;
+    width: auto;
+  }
+
+  .projectCard {
+    grid-template-columns: 5.25rem 1fr auto;
   }
 }
 
@@ -401,5 +638,9 @@
 
   .monolith {
     transform: none;
+  }
+
+  .projectsPanel {
+    animation: none;
   }
 }
