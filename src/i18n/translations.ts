@@ -6,7 +6,7 @@ export const translations = {
       home: "Inicio",
       experience: "Experiencia",
       projects: "Proyectos",
-      toggle: "ES EN",
+      toggle: "EN ES",
     },
     hero: {
       available: "DISPONIBLE PARA PROYECTOS",
@@ -105,6 +105,22 @@ export const translations = {
       githubUrl: "https://github.com/Ematius/",
       copy: "© 2026 Emad Developer. Hecho con pasión y código.",
     },
+    aiLab: {
+      title: "AI Lab",
+      description:
+        "Esta es una pantalla provisional. El universo de AI Lab todavía no se ha construido.",
+      returnButton: "Volver al portafolio",
+      loading: "Cargando AI Lab...",
+      errorTitle: "No se pudo cargar AI Lab",
+      errorDescription:
+        "Ha ocurrido un problema al cargar esta sección. El portafolio original sigue disponible.",
+      errorReturnButton: "Volver al portafolio",
+      activation: {
+        label: "ACTIVAR AI LAB",
+        labelShort: "AI LAB",
+        ariaLabel: "Activar AI Lab",
+      },
+    },
   },
 
   en: {
@@ -112,7 +128,7 @@ export const translations = {
       home: "Home",
       experience: "Experience",
       projects: "Projects",
-      toggle: "ES EN",
+      toggle: "EN ES",
     },
     hero: {
       available: "AVAILABLE FOR PROJECTS",
@@ -210,6 +226,22 @@ export const translations = {
       linkedinUrl: "https://www.linkedin.com/in/emad-kadyear/",
       githubUrl: "https://github.com/Ematius/",
       copy: "© 2026 Emad Developer. Built with passion and code.",
+    },
+    aiLab: {
+      title: "AI Lab",
+      description:
+        "This is a temporary placeholder screen. The AI Lab universe has not been built yet.",
+      returnButton: "Return to portfolio",
+      loading: "Loading AI Lab...",
+      errorTitle: "AI Lab could not be loaded",
+      errorDescription:
+        "Something went wrong while loading this section. The original portfolio is still available.",
+      errorReturnButton: "Return to portfolio",
+      activation: {
+        label: "ACTIVATE AI LAB",
+        labelShort: "AI LAB",
+        ariaLabel: "Activate AI Lab",
+      },
     },
   },
 } as const;

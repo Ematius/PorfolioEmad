@@ -1,0 +1,41 @@
+.AiLabEntry {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-main);
+  color: var(--color-text);
+  padding: var(--space-7);
+  text-align: center;
+
+  .content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-5);
+    max-width: 40ch;
+
+    h1 {
+      font-size: var(--fs-4xl);
+      color: var(--color-button);
+    }
+
+    p {
+      color: var(--color-text-soft);
+    }
+  }
+
+  .returnButton {
+    display: inline-block;
+    background-color: var(--color-button);
+    color: var(--color-text);
+    border: none;
+    border-radius: var(--radius-s);
+    padding: var(--space-3) var(--space-6);
+    text-decoration: none;
+
+    &:hover {
+      background-color: var(--color-button-hover);
+    }
+  }
+}

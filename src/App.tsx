@@ -6,12 +6,20 @@ import { Hero } from "./components/Hero";
 import { Projects } from "./components/Projects";
 import { Experience } from "./components/Experience";
 import { Footer } from "./components/core/Footer";
-
+import { AiLabActivationButton } from "./features/ai-lab/activation/AiLabActivationButton";
 
 type Theme = "dark" | "light";
 
+function prefersReducedMotion(): boolean {
+  return (
+    typeof window !== "undefined" &&
+    typeof window.matchMedia === "function" &&
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches
+  );
+}
+
 function App() {
-  
+
   const [lang, setLang] = useState<Lang>("es");
   const toggleLang = () => {
     setLang((prev) => (prev === "es" ? "en" : "es"));
@@ -24,6 +32,13 @@ function App() {
     document.documentElement.dataset.theme = theme;
   }, [theme]);
 
+  const handleActivateAiLab = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: prefersReducedMotion() ? "auto" : "smooth",
+    });
+  };
+
   return (
     <>
       <Header
@@ -35,9 +50,13 @@ function App() {
       <Projects translation={translations[lang]}></Projects>
       <Experience translation={translations[lang]}></Experience>
       <Footer translation={translations[lang]}></Footer>
+      <AiLabActivationButton
+        translation={translations[lang]}
+        onActivate={handleActivateAiLab}
+      />
     </>
   );
- 
+
 }
 
 export default App;

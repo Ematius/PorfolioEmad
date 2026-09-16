@@ -106,6 +106,12 @@ Decision statuses:
 - Decision: Use controlled camera journeys and direct navigation instead of mandatory free movement.
 - Reason: The goal is a professional portfolio experience, not a game requiring learned controls.
 
+### D014 — AI Lab button placement (resolves P004)
+
+- Status: Accepted.
+- Decision: Floating pill button anchored to the bottom-right corner, rendered once from `App.tsx` and visible across all sections.
+- Reason: Stays accessible from Projects, Experience and Contact without modifying the header or hero layout, and keeps the original portfolio design untouched.
+
 ## Proposed decisions requiring confirmation
 
 ### P001 — Final public name
@@ -133,11 +139,8 @@ Decision statuses:
 
 ### P004 — AI Lab button placement
 
-- Status: Proposed.
-- Pending options:
-  - Hero area.
-  - Persistent header.
-  - Floating corner control.
+- Status: Resolved — see D014.
+- Chosen option: Floating corner control.
 
 ### P005 — Representation of Emad
 
