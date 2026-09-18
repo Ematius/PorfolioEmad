@@ -170,6 +170,7 @@
   color: inherit;
   font: inherit;
   text-align: left;
+  touch-action: manipulation;
   cursor: pointer;
   animation: monolith-awakening var(--monolith-duration)
     var(--monolith-delay-left) cubic-bezier(0.16, 1, 0.3, 1) forwards;
@@ -315,6 +316,7 @@
   font-size: var(--fs-xs);
   letter-spacing: 0.05em;
   text-decoration: none;
+  touch-action: manipulation;
   cursor: pointer;
   backdrop-filter: blur(10px);
 
@@ -910,7 +912,7 @@
   }
 }
 
-@media (min-width: 761px) {
+@media (min-width: 1101px) {
   .isAwake .webglLabels {
     .monolithLeft {
       transform: translateX(clamp(-6rem, -5.4vw, -3rem));
@@ -999,33 +1001,40 @@
   }
 }
 
-@media (max-width: 760px) {
+@media (max-width: 1100px) {
   .AiLabEntry {
     min-height: 32rem;
   }
 
   .monolithField {
-    bottom: 14%;
+    bottom: 9.5%;
     width: calc(100% - 2rem);
-    gap: 0.6rem;
+    height: clamp(18rem, 42vh, 29rem);
+    gap: clamp(0.6rem, 2vw, 1.5rem);
   }
 
   .monolith {
-    min-height: 12.5rem;
-    padding: 0.75rem;
+    min-height: 0;
+    padding: 0.75rem 0.4rem;
 
     .monolithTitle {
-      writing-mode: vertical-rl;
-      transform: rotate(180deg);
+      font-size: clamp(0.72rem, 1.65vw, 0.95rem);
+      letter-spacing: 0.12em;
     }
   }
 
   .monolithCenter {
-    min-height: 16rem;
+    min-height: 0;
+  }
+
+  .interfaceHeader,
+  .interfaceFooter {
+    left: calc(1rem + env(safe-area-inset-left));
+    right: calc(1rem + env(safe-area-inset-right));
   }
 
   .interfaceHeader > p {
-    max-width: 22ch;
+    max-width: 34ch;
   }
 
   .interfaceFooter {
@@ -1037,35 +1046,254 @@
     text-align: center;
   }
 
-  .dataPanel {
-    top: calc(4rem + env(safe-area-inset-top));
-    right: 0.75rem;
-    bottom: calc(4.75rem + env(safe-area-inset-bottom));
-    left: 0.75rem;
+  .dataPanel,
+  .projectsPanel,
+  .journeyPanel,
+  .contactPanel {
+    top: calc(4.5rem + env(safe-area-inset-top));
+    right: calc(1rem + env(safe-area-inset-right));
+    bottom: calc(5rem + env(safe-area-inset-bottom));
+    left: calc(1rem + env(safe-area-inset-left));
     width: auto;
   }
 
+  .projectList {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
   .projectCard {
-    grid-template-columns: 5.25rem 1fr auto;
+    grid-template-columns: 4.75rem minmax(0, 1fr) auto;
+
+    img {
+      min-height: 5rem;
+    }
+  }
+}
+
+@media (max-width: 640px) {
+  .AiLabEntry {
+    min-height: 30rem;
+  }
+
+  .distantLight {
+    top: 55%;
+    width: 110vw;
+  }
+
+  .horizon {
+    bottom: 11%;
+    width: 94vw;
+  }
+
+  .monolithField {
+    top: calc(3.75rem + env(safe-area-inset-top));
+    bottom: calc(4.5rem + env(safe-area-inset-bottom));
+    width: calc(100% - 0.75rem);
+    height: auto;
+    gap: 0.2rem;
+  }
+
+  .webglLabels .monolith {
+    justify-content: flex-end;
+    padding: 0 0.1rem 0.2rem;
+  }
+
+  .monolith {
+    .monolithTitle {
+      writing-mode: horizontal-tb;
+      transform: none;
+      font-size: clamp(0.55rem, 2.35vw, 0.72rem);
+      letter-spacing: 0.07em;
+      white-space: nowrap;
+    }
+  }
+
+  .monolithIndex {
+    margin-bottom: 0.12rem;
+    font-size: 0.58rem;
+  }
+
+  .interfaceHeader,
+  .interfaceFooter {
+    left: calc(0.7rem + env(safe-area-inset-left));
+    right: calc(0.7rem + env(safe-area-inset-right));
+    gap: 0.5rem;
+    font-size: 0.56rem;
+    letter-spacing: 0.08em;
+  }
+
+  .interfaceHeader {
+    top: calc(0.7rem + env(safe-area-inset-top));
+  }
+
+  .interfaceHeader > p {
+    max-width: 22ch;
+  }
+
+  .interfaceFooter {
+    bottom: calc(0.65rem + env(safe-area-inset-bottom));
+  }
+
+  .systemLabel {
+    font-size: 0.62rem;
+  }
+
+  .systemStatus {
+    max-width: 20ch;
+    line-height: 1.25;
+  }
+
+  .returnButton,
+  .skipIntro {
+    min-height: 40px;
+    padding: 0.5rem 0.7rem;
+    font-size: 0.66rem;
+  }
+
+  .returnButton {
+    max-width: 10rem;
+  }
+
+  .dataPanel,
+  .projectsPanel,
+  .journeyPanel,
+  .contactPanel {
+    top: calc(3.6rem + env(safe-area-inset-top));
+    right: calc(0.5rem + env(safe-area-inset-right));
+    bottom: calc(4.2rem + env(safe-area-inset-bottom));
+    left: calc(0.5rem + env(safe-area-inset-left));
+    width: auto;
+    border-radius: 0.75rem;
+    background: rgba(0, 7, 14, 0.94);
+  }
+
+  .panelHeader {
+    gap: 0.65rem;
+    padding: 0.8rem;
+
+    p {
+      font-size: 0.6rem;
+      letter-spacing: 0.13em;
+    }
+
+    h2 {
+      font-size: 1.08rem;
+    }
+  }
+
+  .closePanel {
+    width: 40px;
+    height: 40px;
+    font-size: 1.3rem;
+  }
+
+  .panelScroll,
+  .projectList {
+    padding: 0.7rem;
+  }
+
+  .projectList {
+    grid-template-columns: 1fr;
+    gap: 0.55rem;
+  }
+
+  .projectCard {
+    grid-template-columns: 4.25rem minmax(0, 1fr) auto;
+    gap: 0.65rem;
+    min-height: 4.75rem;
+
+    img {
+      min-height: 4.75rem;
+    }
+
+    > span {
+      padding-right: 0.65rem;
+    }
   }
 
   .timeline {
     &::before {
-      left: 4.25rem;
+      left: 3.2rem;
     }
   }
 
   .timelineEntry {
-    grid-template-columns: 3.2rem 1.1rem minmax(0, 1fr);
+    grid-template-columns: 2.35rem 0.85rem minmax(0, 1fr);
+    gap: 0.35rem;
+    padding-bottom: 1rem;
 
     > time {
-      font-size: 0.64rem;
-      letter-spacing: 0.08em;
+      font-size: 0.56rem;
+      letter-spacing: 0.04em;
     }
+
+    > article {
+      padding: 0.7rem;
+    }
+  }
+
+  .timelineDot {
+    width: 0.48rem;
+    height: 0.48rem;
   }
 
   .cvActions {
     grid-template-columns: 1fr;
+  }
+
+  .contactForm {
+    gap: 0.65rem;
+
+    textarea {
+      min-height: 5.25rem;
+    }
+  }
+}
+
+@media (max-width: 380px) {
+  .interfaceHeader > span {
+    display: none;
+  }
+
+  .projectCard > span {
+    display: none;
+  }
+}
+
+@media (max-height: 600px) and (orientation: landscape) {
+  .AiLabEntry {
+    height: 100svh;
+    min-height: 0;
+  }
+
+  .interfaceHeader {
+    top: calc(0.45rem + env(safe-area-inset-top));
+  }
+
+  .interfaceFooter {
+    bottom: calc(0.4rem + env(safe-area-inset-bottom));
+  }
+
+  .monolithField {
+    top: calc(2.8rem + env(safe-area-inset-top));
+    bottom: calc(3.4rem + env(safe-area-inset-bottom));
+    height: auto;
+  }
+
+  .dataPanel,
+  .projectsPanel,
+  .journeyPanel,
+  .contactPanel {
+    top: calc(2.9rem + env(safe-area-inset-top));
+    bottom: calc(3.6rem + env(safe-area-inset-bottom));
+  }
+
+  .panelHeader {
+    padding: 0.65rem 0.9rem;
+  }
+
+  .projectList {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 

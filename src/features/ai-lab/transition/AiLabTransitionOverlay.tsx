@@ -5,6 +5,28 @@ import { translations } from "../../../i18n/translations";
 import type { Lang } from "../../../i18n/translations";
 import styles from "./AiLabTransitionOverlay.module.scss";
 
+const DESKTOP_VIDEO = "/videos/ai-lab-transition.mp4";
+const TABLET_VIDEO = "/videos/ai-lab-transition-tablet.mp4";
+const MOBILE_VIDEO = "/videos/ai-lab-transition-mobile.mp4";
+
+function getTransitionVideoSource(): string {
+  if (typeof window === "undefined") return DESKTOP_VIDEO;
+
+  if (window.matchMedia("(max-width: 640px)").matches) {
+    return MOBILE_VIDEO;
+  }
+
+  if (
+    window.matchMedia(
+      "(min-width: 641px) and (max-width: 1100px) and (orientation: portrait)",
+    ).matches
+  ) {
+    return TABLET_VIDEO;
+  }
+
+  return DESKTOP_VIDEO;
+}
+
 type AiLabTransitionOverlayProps = {
   translation: (typeof translations)[Lang];
   onComplete: () => void;
@@ -21,10 +43,17 @@ export function AiLabTransitionOverlay({
   const videoRef = useRef<HTMLVideoElement>(null);
   const soundButtonRef = useRef<HTMLButtonElement>(null);
   const skipButtonRef = useRef<HTMLButtonElement>(null);
+  const onErrorRef = useRef(onError);
+  const completionHandledRef = useRef(false);
   const [isMuted, setIsMuted] = useState(false);
   const [hasStarted, setHasStarted] = useState(false);
   const [hasEnded, setHasEnded] = useState(false);
+  const [videoSource] = useState(getTransitionVideoSource);
   const labels = translation.aiLab.transition;
+
+  useEffect(() => {
+    onErrorRef.current = onError;
+  }, [onError]);
 
   useEffect(() => {
     const previousOverflow = document.body.style.overflow;
@@ -73,7 +102,7 @@ export function AiLabTransitionOverlay({
         try {
           await video.play();
         } catch {
-          onError();
+          onErrorRef.current();
         }
       }
     };
@@ -91,6 +120,10 @@ export function AiLabTransitionOverlay({
   };
 
   const handleEnded = () => {
+    if (completionHandledRef.current) return;
+    completionHandledRef.current = true;
+
+    videoRef.current?.pause();
     setHasEnded(true);
     onComplete();
   };
@@ -109,13 +142,15 @@ export function AiLabTransitionOverlay({
 
       <video
         ref={videoRef}
-        className={`${styles.video} ${hasStarted ? styles.videoVisible : ""}`}
-        src="/videos/ai-lab-transition.mp4"
+        className={`${styles.video} ${hasStarted ? styles.videoVisible : ""} ${
+          hasEnded ? styles.videoHandoff : ""
+        }`}
+        src={videoSource}
         preload="auto"
         playsInline
         onPlaying={() => setHasStarted(true)}
         onEnded={handleEnded}
-        onError={onError}
+        onError={() => onErrorRef.current()}
       />
 
       {!hasEnded && (

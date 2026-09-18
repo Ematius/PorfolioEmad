@@ -20,6 +20,7 @@ type AiLabScene3DProps = {
 
 type SystemAnchorProps = {
   position: [number, number, number];
+  baseScale: number;
   rotationY?: number;
   identity: CelestialIdentity;
   active: boolean;
@@ -34,27 +35,91 @@ const COLORS: Record<CelestialIdentity, string> = {
   contact: "#61bfff",
 };
 
+type SceneLayout = {
+  positions: Record<CelestialIdentity, [number, number, number]>;
+  systemScale: number;
+  overviewCamera: [number, number, number];
+  fov: number;
+  activeCameraDistance: number;
+  pointerStrength: number;
+};
+
+function getSceneLayout(width: number): SceneLayout {
+  if (width <= 640) {
+    return {
+      positions: {
+        projects: [-1.55, -0.03, 0],
+        journey: [0, 0.08, -0.18],
+        contact: [1.55, -0.03, 0],
+      },
+      systemScale: 0.5,
+      overviewCamera: [0, 1.25, 15],
+      fov: 46,
+      activeCameraDistance: 6.5,
+      pointerStrength: 0.08,
+    };
+  }
+
+  if (width <= 1100) {
+    return {
+      positions: {
+        projects: [-3.05, -0.04, 0],
+        journey: [0, 0.09, -0.22],
+        contact: [3.05, -0.03, 0],
+      },
+      systemScale: 0.68,
+      overviewCamera: [0, 1.9, 15],
+      fov: 44,
+      activeCameraDistance: 5.8,
+      pointerStrength: 0.16,
+    };
+  }
+
+  return {
+    positions: {
+      projects: [-4.7, -0.05, 0],
+      journey: [0, 0.1, -0.25],
+      contact: [4.7, -0.02, 0],
+    },
+    systemScale: 1,
+    overviewCamera: [0, 2.35, 13.1],
+    fov: 40,
+    activeCameraDistance: 5.2,
+    pointerStrength: 0.26,
+  };
+}
+
 function CameraRig({
   activeSection,
-}: Pick<AiLabScene3DProps, "activeSection">) {
+  layout,
+}: Pick<AiLabScene3DProps, "activeSection"> & { layout: SceneLayout }) {
   const { camera, pointer } = useThree();
   const currentLookAt = useRef(new THREE.Vector3(0, 0.1, 0));
   const desiredPosition = useMemo(() => new THREE.Vector3(), []);
   const desiredLookAt = useMemo(() => new THREE.Vector3(), []);
 
+  useEffect(() => {
+    if (!(camera instanceof THREE.PerspectiveCamera)) return;
+    camera.fov = layout.fov;
+    camera.updateProjectionMatrix();
+  }, [camera, layout.fov]);
+
   useFrame((_, delta) => {
-    if (activeSection === "projects") {
-      desiredPosition.set(-4.7, 1.62, 5.2);
-      desiredLookAt.set(-4.7, 0.02, 0);
-    } else if (activeSection === "journey") {
-      desiredPosition.set(0, 1.86, 5.05);
-      desiredLookAt.set(0, 0.1, -0.2);
-    } else if (activeSection === "contact") {
-      desiredPosition.set(4.7, 1.62, 5.2);
-      desiredLookAt.set(4.7, 0.02, 0);
+    if (activeSection) {
+      const target = layout.positions[activeSection];
+      desiredPosition.set(
+        target[0],
+        target[1] + 1.6,
+        target[2] + layout.activeCameraDistance,
+      );
+      desiredLookAt.set(target[0], target[1] + 0.06, target[2]);
     } else {
-      desiredPosition.set(pointer.x * 0.26, 2.35 + pointer.y * 0.14, 13.1);
-      desiredLookAt.set(pointer.x * 0.1, 0.08 + pointer.y * 0.05, 0);
+      desiredPosition.set(
+        layout.overviewCamera[0] + pointer.x * layout.pointerStrength,
+        layout.overviewCamera[1] + pointer.y * layout.pointerStrength * 0.54,
+        layout.overviewCamera[2],
+      );
+      desiredLookAt.set(pointer.x * 0.08, 0.08 + pointer.y * 0.04, 0);
     }
 
     const positionDamping = 1 - Math.exp(-2.55 * delta);
@@ -69,6 +134,7 @@ function CameraRig({
 
 function SystemAnchor({
   position,
+  baseScale,
   rotationY = 0,
   identity,
   active,
@@ -133,11 +199,12 @@ function SystemAnchor({
       position[1] +
       Math.sin(time * (active ? 1.25 : 0.55) + position[0]) *
         (active ? 0.06 : 0.018);
-    const targetScale =
+    const interactionScale =
       active ? 1.12
       : dimmed ? 0.74
       : hovered ? 1.035
       : 1;
+    const targetScale = baseScale * interactionScale;
 
     group.rotation.y = THREE.MathUtils.damp(
       group.rotation.y,
@@ -190,6 +257,7 @@ function SystemAnchor({
     <group
       ref={groupRef}
       position={position}
+      scale={baseScale}
       rotation={[0, rotationY, 0]}
       onPointerOver={handlePointerOver}
       onPointerOut={handlePointerOut}
@@ -343,14 +411,14 @@ function ModelAsset({
         const material = source.clone();
 
         if (material instanceof THREE.MeshStandardMaterial) {
-          material.color.multiplyScalar(1);
-          material.emissive.multiplyScalar(0.22);
-          material.emissiveIntensity *= 0.35;
-          material.metalness = Math.min(material.metalness, 0.28);
-          material.roughness = Math.max(material.roughness, 0.72);
-          material.envMapIntensity = Math.min(material.envMapIntensity, 0.35);
+          material.color.multiplyScalar(0.55);
+          material.emissive.set("#000000");
+          material.emissiveIntensity = 0;
+          material.metalness = Math.min(material.metalness, 0.15);
+          material.roughness = Math.max(material.roughness, 0.85);
+          material.envMapIntensity = Math.min(material.envMapIntensity, 0.15);
         } else if (material instanceof THREE.MeshBasicMaterial) {
-          material.color.multiplyScalar(0.72);
+          material.color.multiplyScalar(0.55);
         }
 
         return material;
@@ -454,7 +522,6 @@ function ProjectsArchiveModel() {
       size={1.52}
       rotation={[0.04, -0.3, 0.02]}
       spinSpeed={0.15}
-      reduceBrightness
     />
   );
 }
@@ -463,14 +530,19 @@ function ProjectsSystem({
   active,
   dimmed,
   onSelect,
+  position,
+  baseScale,
 }: {
   active: boolean;
   dimmed: boolean;
   onSelect: () => void;
+  position: [number, number, number];
+  baseScale: number;
 }) {
   return (
     <SystemAnchor
-      position={[-4.7, -0.05, 0]}
+      position={position}
+      baseScale={baseScale}
       rotationY={0.12}
       identity="projects"
       active={active}
@@ -668,14 +740,19 @@ function JourneySystem({
   active,
   dimmed,
   onSelect,
+  position,
+  baseScale,
 }: {
   active: boolean;
   dimmed: boolean;
   onSelect: () => void;
+  position: [number, number, number];
+  baseScale: number;
 }) {
   return (
     <SystemAnchor
-      position={[0, 0.1, -0.25]}
+      position={position}
+      baseScale={baseScale}
       identity="journey"
       active={active}
       dimmed={dimmed}
@@ -691,14 +768,19 @@ function ContactSystem({
   active,
   dimmed,
   onSelect,
+  position,
+  baseScale,
 }: {
   active: boolean;
   dimmed: boolean;
   onSelect: () => void;
+  position: [number, number, number];
+  baseScale: number;
 }) {
   return (
     <SystemAnchor
-      position={[4.7, -0.02, 0]}
+      position={position}
+      baseScale={baseScale}
       rotationY={-0.1}
       identity="contact"
       active={active}
@@ -720,6 +802,7 @@ function ContactSystem({
           size={1.4}
           rotation={[0.02, -0.28, 0]}
           spinSpeed={0.12}
+          reduceBrightness
         />
       </Suspense>
       <Suspense fallback={null}>
@@ -914,6 +997,9 @@ function Scene({
   onSelectJourney,
   onSelectContact,
 }: Omit<AiLabScene3DProps, "onReady">) {
+  const { size } = useThree();
+  const layout = useMemo(() => getSceneLayout(size.width), [size.width]);
+
   return (
     <>
       <fogExp2 attach="fog" args={["#00030a", 0.026]} />
@@ -932,44 +1018,50 @@ function Scene({
         color="#79d5ff"
       />
       <pointLight
-        position={[-4.2, 0.4, 3.2]}
+        position={[layout.positions.projects[0], 0.4, 3.2]}
         intensity={activeSection === "projects" ? 23 : 9}
         distance={7}
         decay={2}
         color={COLORS.projects}
       />
       <pointLight
-        position={[0, 0.6, 3.2]}
+        position={[layout.positions.journey[0], 0.6, 3.2]}
         intensity={activeSection === "journey" ? 27 : 11}
         distance={7}
         decay={2}
         color={COLORS.journey}
       />
       <pointLight
-        position={[4.2, 0.4, 3.2]}
-        intensity={activeSection === "contact" ? 25 : 10}
+        position={[layout.positions.contact[0], 0.4, 3.2]}
+        intensity={activeSection === "contact" ? 10 : 4}
         distance={7}
         decay={2}
         color={COLORS.contact}
       />
 
-      <CameraRig activeSection={activeSection} />
+      <CameraRig activeSection={activeSection} layout={layout} />
       <NebulaCloud />
       <AmbientStars />
       <ProjectsSystem
         active={activeSection === "projects"}
         dimmed={activeSection !== null && activeSection !== "projects"}
         onSelect={onSelectProjects}
+        position={layout.positions.projects}
+        baseScale={layout.systemScale}
       />
       <JourneySystem
         active={activeSection === "journey"}
         dimmed={activeSection !== null && activeSection !== "journey"}
         onSelect={onSelectJourney}
+        position={layout.positions.journey}
+        baseScale={layout.systemScale}
       />
       <ContactSystem
         active={activeSection === "contact"}
         dimmed={activeSection !== null && activeSection !== "contact"}
         onSelect={onSelectContact}
+        position={layout.positions.contact}
+        baseScale={layout.systemScale}
       />
     </>
   );
@@ -984,7 +1076,7 @@ export default function AiLabScene3D({
 }: AiLabScene3DProps) {
   return (
     <Canvas
-      dpr={[1, 1.5]}
+      dpr={[1, 1.35]}
       camera={{ position: [0, 2.35, 13.1], fov: 40, near: 0.1, far: 70 }}
       gl={{ alpha: true, antialias: true, powerPreference: "high-performance" }}
       onCreated={({ gl }) => {

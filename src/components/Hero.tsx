@@ -105,7 +105,7 @@ export function Hero({
           }`}
           aria-label="Foto de Emad"
         >
-          <img src="/FotoEmad.png" alt="Foto de Emad" />
+          <img src="/FotoEmad.webp" alt="Foto de Emad" />
         </div>
       </div>
 

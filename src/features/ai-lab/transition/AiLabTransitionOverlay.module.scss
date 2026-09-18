@@ -85,7 +85,7 @@
   box-shadow: 0 0 12px rgba(0, 140, 255, 0.8);
   transform: scaleX(0);
   transform-origin: left center;
-  animation: transition-progress 10s linear forwards;
+  animation: transition-progress 12s linear forwards;
 }
 
 @keyframes overlay-in {
@@ -97,11 +97,7 @@
   to { transform: scaleX(1); }
 }
 
-@media (max-aspect-ratio: 4 / 3) {
-  .video { object-fit: contain; }
-}
-
-@media (max-width: 520px) {
+@media (max-width: 640px) {
   .controls {
     left: calc(0.75rem + env(safe-area-inset-left));
     right: calc(0.75rem + env(safe-area-inset-right));
@@ -109,6 +105,13 @@
   }
 
   .controlButton { padding-inline: 0.8rem; }
+}
+
+@media (min-width: 641px) and (max-width: 1100px) and (orientation: portrait) {
+  .controls {
+    top: calc(1.25rem + env(safe-area-inset-top));
+    right: calc(1.25rem + env(safe-area-inset-right));
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
