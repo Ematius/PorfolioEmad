@@ -203,3 +203,16 @@ MySQL
 WordPress
 
 This project represents a consolidation phase within the **React ecosystem**.
+
+| Archivo                              | Qué hace                                                                                                                                  | Piensa en él como…                   |
+| ------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------ |
+| `AiLabActivationButton.tsx`          | Es el botón **ACTIVAR AI LAB** que tienes en el portfolio. Recibe `onActivate` y avisa al componente superior cuando lo pulsas.           | El **interruptor de entrada**        |
+| `AiLabActivationButton.module.scss`  | Da forma, animación y estética a ese botón.                                                                                               | La **carcasa del interruptor**       |
+| `AiLabTransitionOverlay.tsx`         | Controla el vídeo a pantalla completa: reproducción, sonido, silenciar, saltar, `Escape`, bloqueo del scroll y qué hacer cuando termina.  | La **cinemática de entrada**         |
+| `AiLabTransitionOverlay.module.scss` | Posición fullscreen, botones, barra de progreso, responsive, etc.                                                                         | La **presentación de la cinemática** |
+| `AiLabEntry.tsx`                     | Es el más importante. Controla partículas, despertar, qué sección está activa, PROYECTOS/RECORRIDO, paneles y conecta React con Three.js. | El **director de orquesta**          |
+| `AiLabEntry.module.scss`             | Todo el escenario CSS: oscuridad, partículas, horizonte, etiquetas, panel lateral, animaciones, móvil…                                    | La **dirección artística**           |
+| `AiLabScene3D.tsx`                   | Construye los tres monolitos 3D, luces, cámara, hover, movimiento y clicks.                                                               | El **escenario 3D**                  |
+| `AiLabSceneBoundary.tsx`             | Si Three.js/WebGL falla, impide que ese error destruya todo AI Lab. Devuelve `null` y permanece el fondo/fallback CSS.                    | El **fusible del 3D**                |
+| `AiLabLoadingFallback.tsx`           | Muestra una pantalla sencilla mientras se carga AI Lab, por ejemplo si el componente está cargándose de manera diferida.                  | La **pantalla “cargando…”**          |
+| `AiLabErrorBoundary.tsx`             | Es una protección más amplia: si se rompe AI Lab, muestra un mensaje de error y permite regresar al portfolio.                            | El **plan de emergencia general**    |

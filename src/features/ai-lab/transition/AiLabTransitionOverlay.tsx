@@ -1,3 +1,5 @@
+/** @format */
+
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { translations } from "../../../i18n/translations";
 import type { Lang } from "../../../i18n/translations";
@@ -21,6 +23,7 @@ export function AiLabTransitionOverlay({
   const skipButtonRef = useRef<HTMLButtonElement>(null);
   const [isMuted, setIsMuted] = useState(false);
   const [hasStarted, setHasStarted] = useState(false);
+  const [hasEnded, setHasEnded] = useState(false);
   const labels = translation.aiLab.transition;
 
   useEffect(() => {
@@ -76,7 +79,7 @@ export function AiLabTransitionOverlay({
     };
 
     void startPlayback();
-  }, [onError]);
+  }, []);
 
   const toggleSound = () => {
     const video = videoRef.current;
@@ -87,13 +90,17 @@ export function AiLabTransitionOverlay({
     setIsMuted(nextMutedState);
   };
 
+  const handleEnded = () => {
+    setHasEnded(true);
+    onComplete();
+  };
+
   return (
     <div
       className={styles.overlay}
       role="dialog"
       aria-modal="true"
-      aria-label={labels.ariaLabel}
-    >
+      aria-label={labels.ariaLabel}>
       {!hasStarted && (
         <p className={styles.loading} role="status" aria-live="polite">
           {labels.loading}
@@ -107,31 +114,31 @@ export function AiLabTransitionOverlay({
         preload="auto"
         playsInline
         onPlaying={() => setHasStarted(true)}
-        onEnded={onComplete}
+        onEnded={handleEnded}
         onError={onError}
       />
 
-      <div className={styles.controls}>
-        <button
-          ref={soundButtonRef}
-          type="button"
-          className={styles.controlButton}
-          onClick={toggleSound}
-          aria-pressed={isMuted}
-        >
-          {isMuted ? labels.unmute : labels.mute}
-        </button>
-        <button
-          ref={skipButtonRef}
-          type="button"
-          className={styles.controlButton}
-          onClick={onSkip}
-        >
-          {labels.skip}
-        </button>
-      </div>
+      {!hasEnded && (
+        <div className={styles.controls}>
+          <button
+            ref={soundButtonRef}
+            type="button"
+            className={styles.controlButton}
+            onClick={toggleSound}
+            aria-pressed={isMuted}>
+            {isMuted ? labels.unmute : labels.mute}
+          </button>
+          <button
+            ref={skipButtonRef}
+            type="button"
+            className={styles.controlButton}
+            onClick={onSkip}>
+            {labels.skip}
+          </button>
+        </div>
+      )}
 
-      <div className={styles.progress} aria-hidden="true" />
+      {!hasEnded && <div className={styles.progress} aria-hidden="true" />}
     </div>
   );
 }

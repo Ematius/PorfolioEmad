@@ -4,7 +4,7 @@ export const projects = [
     title: "1ª Portafolio",
     tech: ["Angular 19", "Gsap"],
     image: "/projects/portafolio.png",
-    url: "https://portfolioemad.com/",
+    url: "https://portafolio-git-master-ematius-projects.vercel.app/",
     deployment: "Vercel",
   },
   {

@@ -1,3 +1,5 @@
+/** @format */
+
 import { lazy, Suspense, useEffect, useRef, useState } from "react";
 import { Navigate, Route, Routes, useNavigate } from "react-router";
 import { Header } from "./components/core/Header";
@@ -15,7 +17,7 @@ import { AiLabTransitionOverlay } from "./features/ai-lab/transition/AiLabTransi
 const AiLabEntry = lazy(() => import("./features/ai-lab/AiLabEntry"));
 
 type Theme = "dark" | "light";
-type AiLabTransitionPhase = "idle" | "scrolling" | "playing";
+type AiLabTransitionPhase = "idle" | "scrolling" | "playing" | "handoff";
 
 function prefersReducedMotion(): boolean {
   return (
@@ -30,6 +32,7 @@ function App() {
   const [aiLabTransitionPhase, setAiLabTransitionPhase] =
     useState<AiLabTransitionPhase>("idle");
   const scrollAnimationFrameRef = useRef<number | null>(null);
+  const transitionHandoffTimeoutRef = useRef<number | null>(null);
   const previousScrollBehaviorRef = useRef<string | null>(null);
   const navigate = useNavigate();
   const toggleLang = () => {
@@ -47,6 +50,9 @@ function App() {
     return () => {
       if (scrollAnimationFrameRef.current !== null) {
         window.cancelAnimationFrame(scrollAnimationFrameRef.current);
+      }
+      if (transitionHandoffTimeoutRef.current !== null) {
+        window.clearTimeout(transitionHandoffTimeoutRef.current);
       }
       if (previousScrollBehaviorRef.current !== null) {
         document.documentElement.style.scrollBehavior =
@@ -93,9 +99,9 @@ function App() {
     const animateScroll = (now: number) => {
       const progress = Math.min((now - scrollStartedAt) / scrollDuration, 1);
       const easedProgress =
-        progress < 0.5
-          ? 4 * progress * progress * progress
-          : 1 - Math.pow(-2 * progress + 2, 3) / 2;
+        progress < 0.5 ?
+          4 * progress * progress * progress
+        : 1 - Math.pow(-2 * progress + 2, 3) / 2;
 
       scrollingElement.scrollTop =
         currentScrollTop + scrollDistance * easedProgress;
@@ -110,13 +116,18 @@ function App() {
         return;
       }
 
-      scrollAnimationFrameRef.current = window.requestAnimationFrame(animateScroll);
+      scrollAnimationFrameRef.current =
+        window.requestAnimationFrame(animateScroll);
     };
 
-    scrollAnimationFrameRef.current = window.requestAnimationFrame(animateScroll);
+    scrollAnimationFrameRef.current =
+      window.requestAnimationFrame(animateScroll);
   };
 
-  const enterAiLab = (entry: "cinematic" | "skip") => {
+  const enterAiLab = (
+    entry: "cinematic" | "skip",
+    keepTransitionOverlay = false,
+  ) => {
     if (scrollAnimationFrameRef.current !== null) {
       window.cancelAnimationFrame(scrollAnimationFrameRef.current);
       scrollAnimationFrameRef.current = null;
@@ -126,63 +137,79 @@ function App() {
         previousScrollBehaviorRef.current;
       previousScrollBehaviorRef.current = null;
     }
-    setAiLabTransitionPhase("idle");
+    if (!keepTransitionOverlay) {
+      setAiLabTransitionPhase("idle");
+    }
     navigate("/ai-lab", { state: { entry } });
   };
 
-  const handleCompleteAiLabTransition = () => enterAiLab("cinematic");
+  const handleCompleteAiLabTransition = () => {
+    // Keep the video's final black frame above both routes while React swaps
+    // the portfolio for AI Lab. This prevents a one-frame flash of the page
+    // that sits underneath the transition.
+    setAiLabTransitionPhase("handoff");
+    enterAiLab("cinematic", true);
+
+    transitionHandoffTimeoutRef.current = window.setTimeout(() => {
+      setAiLabTransitionPhase("idle");
+      transitionHandoffTimeoutRef.current = null;
+    }, 600);
+  };
   const handleSkipAiLabTransition = () => enterAiLab("skip");
 
   return (
-    <Routes>
-      <Route
-        path="/"
-        element={
-          <>
-            <Header
-              translation={translations[lang]}
-              onToggleLang={toggleLang}
-              onToggleTheme={toggleTheme}
-            />
-            <Hero
-              translation={translations[lang]}
-              isAiLabTransitioning={aiLabTransitionPhase === "playing"}
-            />
-            <Projects translation={translations[lang]} />
-            <Experience translation={translations[lang]} />
-            <Footer translation={translations[lang]} />
-            <AiLabActivationButton
-              translation={translations[lang]}
-              onActivate={handleActivateAiLab}
-              disabled={aiLabTransitionPhase !== "idle"}
-            />
-            {aiLabTransitionPhase === "playing" && (
-              <AiLabTransitionOverlay
+    <>
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <>
+              <Header
                 translation={translations[lang]}
-                onComplete={handleCompleteAiLabTransition}
-                onSkip={handleSkipAiLabTransition}
-                onError={handleSkipAiLabTransition}
+                onToggleLang={toggleLang}
+                onToggleTheme={toggleTheme}
               />
-            )}
-          </>
-        }
-      />
-      <Route
-        path="/ai-lab"
-        element={
-          <AiLabErrorBoundary translation={translations[lang]}>
-            <Suspense
-              fallback={
-                <AiLabLoadingFallback translation={translations[lang]} />
-              }
-            >
-              <AiLabEntry translation={translations[lang]} />
-            </Suspense>
-          </AiLabErrorBoundary>
-        }
-      />
-      <Route path="*" element={<Navigate to="/" replace />} />
-    </Routes>
+              <Hero
+                translation={translations[lang]}
+                isAiLabTransitioning={aiLabTransitionPhase === "playing"}
+              />
+              <Projects translation={translations[lang]} />
+              <Experience translation={translations[lang]} />
+              <Footer translation={translations[lang]} />
+              <AiLabActivationButton
+                translation={translations[lang]}
+                onActivate={handleActivateAiLab}
+                disabled={aiLabTransitionPhase !== "idle"}
+              />
+            </>
+          }
+        />
+        <Route
+          path="/ai-lab"
+          element={
+            <AiLabErrorBoundary translation={translations[lang]}>
+              <Suspense
+                fallback={
+                  <AiLabLoadingFallback translation={translations[lang]} />
+                }>
+                <AiLabEntry translation={translations[lang]} />
+              </Suspense>
+            </AiLabErrorBoundary>
+          }
+        />
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+
+      {(aiLabTransitionPhase === "playing" ||
+        aiLabTransitionPhase === "handoff") && (
+        <AiLabTransitionOverlay
+          translation={translations[lang]}
+          onComplete={handleCompleteAiLabTransition}
+          onSkip={handleSkipAiLabTransition}
+          onError={handleSkipAiLabTransition}
+        />
+      )}
+    </>
   );
 }
 
