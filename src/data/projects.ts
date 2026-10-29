@@ -31,4 +31,12 @@ export const projects = [
     url: "https://frontend-production-f433.up.railway.app/",
     deployment: "RailWay",
   },
+  {
+    id: 5,
+    title: "BiblioJapo",
+    tech: ["React/vite", "Supabase"],
+    image: "/projects/bibliojapo.png",
+    url: "https://www.bibliojapo.app/",
+    deployment: "Vercel",
+  },
 ];
