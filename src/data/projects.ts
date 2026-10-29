@@ -34,7 +34,7 @@ export const projects = [
   {
     id: 5,
     title: "BiblioJapo",
-    tech: ["React/vite", "Supabase"],
+    tech: ["React/vite", "Supabase", "ClaudeIA"],
     image: "/projects/bibliojapo.png",
     url: "https://www.bibliojapo.app/",
     deployment: "Vercel",
